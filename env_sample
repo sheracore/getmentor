@@ -1,0 +1,14 @@
+ENV=debug
+DATABASE_NAME=sample
+DATABASE_USER=sample
+DATABASE_PASSWORD=sample
+DATABASE_HOST=sample
+MASTERKEY=sample
+CIRUNNER=sample
+SECRET_KEY=sample
+ALLOWED_HOSTS=sample
+REDIS_HOST=sample
+REDIS_PORT=sample
+REDIS_PASSWORD=sample
+IS_DIFF=False
+IS_PROD=False
