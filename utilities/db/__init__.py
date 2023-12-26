@@ -1,1 +1,1 @@
-from .models import BaseModel  # noqa
+from .models import BaseModel, BaseModelManager, BaseModelQuerySet  # noqa
