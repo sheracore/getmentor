@@ -1,15 +1,15 @@
+from django.contrib.auth.models import (AbstractBaseUser, BaseUserManager,
+                                        PermissionsMixin)
 from django.db import models
-from django.contrib.auth.models import (
-    AbstractBaseUser, BaseUserManager, PermissionsMixin
-)
 from django.utils.translation import gettext_lazy as _
+
 from utilities.db import BaseModel
 
 
 class UserManager(BaseUserManager):
     def create_user(self, email, password, **extra_fields):
         if not email:
-            raise ValueError('The Email field must be set')
+            raise ValueError("The Email field must be set")
         email = self.normalize_email(email)
         user = self.model(email=email, **extra_fields)
         user.set_password(password)
@@ -17,22 +17,22 @@ class UserManager(BaseUserManager):
         return user
 
     def create_superuser(self, email, password, **extra_fields):
-        extra_fields.setdefault('is_staff', True)
-        extra_fields.setdefault('is_superuser', True)
+        extra_fields.setdefault("is_staff", True)
+        extra_fields.setdefault("is_superuser", True)
 
         return self.create_user(email, password, **extra_fields)
 
 
 class User(AbstractBaseUser, PermissionsMixin, BaseModel):
-    email = models.EmailField(unique=True, null=False, verbose_name=_('Email'))
-    is_staff = models.BooleanField(default=False, verbose_name=_('Is staff'))
+    email = models.EmailField(unique=True, null=False, verbose_name=_("Email"))
+    is_staff = models.BooleanField(default=False, verbose_name=_("Is staff"))
 
     objects = UserManager()
 
-    USERNAME_FIELD = 'email'
-    REQUIRED_FIELDS = ['is_staff']
+    USERNAME_FIELD = "email"
+    REQUIRED_FIELDS = ["is_staff"]
 
     class Meta:
         app_label = "users"
-        verbose_name = _('User')
-        verbose_name_plural = _('Users')
+        verbose_name = _("User")
+        verbose_name_plural = _("Users")
