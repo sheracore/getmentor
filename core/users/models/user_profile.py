@@ -5,6 +5,8 @@ from django.utils.translation import get_language
 from django.utils.translation import gettext_lazy as _
 from faker import Faker
 
+from core.files.models import FileType
+from utilities.db.fields import FileField
 from utilities.db.models import BaseModel, BaseModelManager
 
 
@@ -84,6 +86,11 @@ class UserProfile(BaseModel):
         choices=GenderType.choices,
         verbose_name=_("Gender"),
     )
+    avatar = FileField(null=True,
+                       blank=True,
+                       on_delete=models.SET_NULL,
+                       allow_type=[FileType.IMAGE],
+                       verbose_name=_('Avatar'))
     timezone = models.CharField(
         max_length=100,
         choices=tuple(zip(pytz.common_timezones, pytz.common_timezones)),
