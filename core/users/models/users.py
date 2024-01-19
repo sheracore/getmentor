@@ -1,6 +1,8 @@
 from django.contrib.auth.models import (AbstractBaseUser, BaseUserManager,
                                         PermissionsMixin)
 from django.db import models
+from django.db.models.signals import post_save
+from django.dispatch import receiver
 from django.utils.translation import gettext_lazy as _
 
 from utilities.db import BaseModel
@@ -36,3 +38,8 @@ class User(AbstractBaseUser, PermissionsMixin, BaseModel):
         app_label = "users"
         verbose_name = _("User")
         verbose_name_plural = _("Users")
+
+
+@receiver(post_save, sender=User)
+def user_after_save_receiver(sender, instance, created, **kwargs):
+    instance.userprofile_set.get_or_create(user=instance)
