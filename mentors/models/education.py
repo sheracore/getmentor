@@ -3,6 +3,7 @@ from django.db import models
 from django.utils.translation import gettext_lazy as _
 
 from utilities.db.fields import MonthField, YearField
+from utilities.db.models import BaseModel, BaseModelManager
 
 
 class Degree(models.TextChoices):
@@ -14,27 +15,29 @@ class Degree(models.TextChoices):
     DOCTOR = 'DOCTOR', _('Doctor')
 
 
-class University(models.Model):
-    name = models.CharField(max_length=128, unique=True)
+class University(BaseModel):
+    name = models.CharField(max_length=128, unique=True, verbose_name=_("name"))
+
+    objects = BaseModelManager()
 
     def __str__(self):
         return self.name
 
 
-class Major(models.Model):
-    name = models.CharField(max_length=128, unique=True)
+class Major(BaseModel):
+    name = models.CharField(max_length=128, unique=True, verbose_name=_("name"))
+
+    objects = BaseModelManager()
 
     def __str__(self):
         return self.name
 
 
-class Education(models.Model):
-    # mentor_fk
+class Education(BaseModel):
+    # TODO: mentor_fk
     university = models.ForeignKey(
         University,
-        on_delete=models.SET_NULL,
-        null=True,
-        blank=True,
+        on_delete=models.CASCADE,
         verbose_name=_('university'))
     degree = models.CharField(
         choices=Degree.choices,
@@ -43,17 +46,18 @@ class Education(models.Model):
         Major,
         null=True,
         blank=True,
-        on_delete=models.SET_NULL,
+        on_delete=models.CASCADE,
         verbose_name=_('Major'))
     grade = models.CharField(
         max_length=32,
         null=True,
         blank=True,
         verbose_name=_('Grade'))
+    is_current = models.BooleanField(
+        default=False,
+        verbose_name=_("I am currently working in this role"))
     start_year = YearField(
         last_n_year=50,
-        blank=True,
-        null=True,
         verbose_name=_('Start Year'))
     end_year = YearField(
         last_n_year=50,
@@ -61,8 +65,6 @@ class Education(models.Model):
         null=True,
         verbose_name=_('End Year'))
     start_month = MonthField(
-        blank=True,
-        null=True,
         verbose_name=_('Start Month'))
     end_month = MonthField(
         blank=True,
@@ -74,16 +76,21 @@ class Education(models.Model):
         blank=True,
         verbose_name=_('Activities and Societies'))
 
+    objects = BaseModelManager()
+
     def __str__(self):
+        # TODO add mentor name
         return f"{self.major.name} at {self.university.name}"
 
     def clean(self):
         super(Education, self).clean()
-        if self.start_year and not self.end_year:
-            raise ValidationError({'end_year': _('this field is required')})
-        if self.start_month and not self.end_month:
-            raise ValidationError({'end_month': _('this field is required')})
-        if self.end_year and not self.start_year:
-            raise ValidationError({'start_year': _('this field is required')})
-        if self.end_month and not self.start_month:
-            raise ValidationError({'start_month': _('this field is required')})
+        if self.is_current:
+            if self.end_year or self.end_month:
+                raise ValidationError({
+                    'is_current': [_('you can not use this field with end_year or end_month at the same time.')],
+                })
+        else:
+            if not self.end_year:
+                raise ValidationError({'end_year': _('this field is required')})
+            if not self.end_month:
+                raise ValidationError({'end_month': _('this field is required')})
