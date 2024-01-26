@@ -1,8 +1,7 @@
-# from django.core.exceptions import ValidationError
 from django.db import models
 from django.utils.translation import gettext_lazy as _
 
-# from utilities.db.fields import MonthField, YearField
+from core.locations.models import Location
 from utilities.db.models import BaseModel, BaseModelManager
 
 from ..utilities import AbstractDurationModel
@@ -54,6 +53,13 @@ class Education(AbstractDurationModel, BaseModel):
         blank=True,
         on_delete=models.CASCADE,
         verbose_name=_('Major'))
+    location = models.ForeignKey(
+        Location,
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        verbose_name=_('Location')
+    )
     grade = models.CharField(
         max_length=32,
         null=True,

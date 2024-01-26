@@ -2,6 +2,7 @@ from django.db import models
 from django.utils.translation import gettext_lazy as _
 
 from core.links.models import Link
+from core.locations.models import Location
 from utilities.db.models import BaseModel, BaseModelManager
 
 from ..utilities import AbstractDurationModel
@@ -61,6 +62,13 @@ class Experience(AbstractDurationModel, BaseModel):
         on_delete=models.CASCADE,
         verbose_name=_("Company")
     )
+    location = models.ForeignKey(
+        Location,
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        verbose_name=_('Location')
+    )
     description = models.TextField(
         max_length=1500,
         null=True,
@@ -93,6 +101,13 @@ class Certificate(AbstractDurationModel, BaseModel):
         Company,
         on_delete=models.CASCADE,
         verbose_name=_("Company")
+    )
+    location = models.ForeignKey(
+        Location,
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        verbose_name=_('Location')
     )
     credential_id = models.CharField(
         max_length=50,
