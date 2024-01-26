@@ -51,7 +51,8 @@ INSTALLED_APPS = [
     "core.users",
     "core.files",
     "core.locations",
-    "mentors"
+    "core.links",
+    "mentors",
 ]
 
 MIDDLEWARE = [

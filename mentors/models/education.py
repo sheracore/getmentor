@@ -1,9 +1,11 @@
-from django.core.exceptions import ValidationError
+# from django.core.exceptions import ValidationError
 from django.db import models
 from django.utils.translation import gettext_lazy as _
 
-from utilities.db.fields import MonthField, YearField
+# from utilities.db.fields import MonthField, YearField
 from utilities.db.models import BaseModel, BaseModelManager
+
+from ..utilities import AbstractDurationModel
 
 
 class Degree(models.TextChoices):
@@ -20,6 +22,10 @@ class University(BaseModel):
 
     objects = BaseModelManager()
 
+    class Meta:
+        verbose_name = _('University')
+        verbose_name_plural = _('Universities')
+
     def __str__(self):
         return self.name
 
@@ -33,7 +39,7 @@ class Major(BaseModel):
         return self.name
 
 
-class Education(BaseModel):
+class Education(AbstractDurationModel, BaseModel):
     # TODO: mentor_fk
     university = models.ForeignKey(
         University,
@@ -53,23 +59,6 @@ class Education(BaseModel):
         null=True,
         blank=True,
         verbose_name=_('Grade'))
-    is_current = models.BooleanField(
-        default=False,
-        verbose_name=_("I am currently working in this role"))
-    start_year = YearField(
-        last_n_year=50,
-        verbose_name=_('Start Year'))
-    end_year = YearField(
-        last_n_year=50,
-        blank=True,
-        null=True,
-        verbose_name=_('End Year'))
-    start_month = MonthField(
-        verbose_name=_('Start Month'))
-    end_month = MonthField(
-        blank=True,
-        null=True,
-        verbose_name=_('End Month'))
     activities_societies = models.TextField(
         max_length=500,
         null=True,
@@ -81,16 +70,3 @@ class Education(BaseModel):
     def __str__(self):
         # TODO add mentor name
         return f"{self.major.name} at {self.university.name}"
-
-    def clean(self):
-        super(Education, self).clean()
-        if self.is_current:
-            if self.end_year or self.end_month:
-                raise ValidationError({
-                    'is_current': [_('you can not use this field with end_year or end_month at the same time.')],
-                })
-        else:
-            if not self.end_year:
-                raise ValidationError({'end_year': _('this field is required')})
-            if not self.end_month:
-                raise ValidationError({'end_month': _('this field is required')})

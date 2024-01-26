@@ -1,9 +1,10 @@
-from django.core.exceptions import ValidationError
 from django.db import models
 from django.utils.translation import gettext_lazy as _
 
-from utilities.db.fields import MonthField, YearField
+from core.links.models import Link
 from utilities.db.models import BaseModel, BaseModelManager
+
+from ..utilities import AbstractDurationModel
 
 
 class Skill(BaseModel):
@@ -44,7 +45,7 @@ class Seniority(models.IntegerChoices):
     FOUNDER = 8, _('Founder')
 
 
-class Experience(BaseModel):
+class Experience(AbstractDurationModel, BaseModel):
     # TODO: mentor_FK
     role = models.ForeignKey(
         Role,
@@ -60,23 +61,6 @@ class Experience(BaseModel):
         on_delete=models.CASCADE,
         verbose_name=_("Company")
     )
-    is_current = models.BooleanField(
-        default=False,
-        verbose_name=_("I am currently working in this role"))
-    start_year = YearField(
-        last_n_year=50,
-        verbose_name=_('Start Year'))
-    end_year = YearField(
-        last_n_year=50,
-        blank=True,
-        null=True,
-        verbose_name=_('End Year'))
-    start_month = MonthField(
-        verbose_name=_('Start Month'))
-    end_month = MonthField(
-        blank=True,
-        null=True,
-        verbose_name=_('End Month'))
     description = models.TextField(
         max_length=1500,
         null=True,
@@ -87,20 +71,7 @@ class Experience(BaseModel):
 
     def __str__(self):
         # add mentor name
-        return f"{self.company.name}-{self.role}"
-
-    def clean(self):
-        super(Experience, self).clean()
-        if self.is_current:
-            if self.end_year or self.end_month:
-                raise ValidationError({
-                    'is_current': [_('you can not use this field with end_year or end_month at the same time.')],
-                })
-        else:
-            if not self.end_year:
-                raise ValidationError({'end_year': _('this field is required')})
-            if not self.end_month:
-                raise ValidationError({'end_month': _('this field is required')})
+        return f"{self.role} at {self.company.name}"
 
 
 class ExperienceSkill(BaseModel):
@@ -108,10 +79,39 @@ class ExperienceSkill(BaseModel):
     skill = models.ForeignKey(Skill, on_delete=models.CASCADE, verbose_name=_("Skill"))
 
     def __str__(self):
-        return f"{self.experience}-{self.skill}"
+        return f"{self.experience}---skill-->{self.skill}"
 
     objects = BaseModelManager()
 
 
-class Certificate:
-    pass
+class Certificate(AbstractDurationModel, BaseModel):
+    # TODO mentor_fk
+    name = models.CharField(
+        max_length=128,
+        verbose_name=_("name"))
+    company = models.ForeignKey(
+        Company,
+        on_delete=models.CASCADE,
+        verbose_name=_("Company")
+    )
+    credential_id = models.CharField(
+        max_length=50,
+        null=True,
+        blank=True,
+        help_text=_("If you have critical id for your certificate please insert here"),
+        verbose_name="Credential ID", unique=True)
+    credential_url = models.ForeignKey(
+        Link,
+        on_delete=models.CASCADE,
+        null=True,
+        blank=True,
+        verbose_name=_("Credential URL"))
+
+    objects = BaseModelManager()
+
+    def __str__(self):
+        return f"{self.name} from {self.company.name}"
+
+    class Meta:
+        verbose_name = _('License and Certificate')
+        verbose_name_plural = _('Licenses and Certificates')
