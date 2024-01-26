@@ -2,7 +2,7 @@ from django.db import models
 from django.utils.translation import gettext_lazy as _
 from django_countries.fields import CountryField
 
-from utilities.db.models import BaseModel, BaseModelManager
+from utilities.db.basemodel import BaseModel, BaseModelManager
 
 
 class Location(BaseModel):

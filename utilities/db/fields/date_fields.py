@@ -16,6 +16,9 @@ class YearField(models.PositiveIntegerField):
         kwargs.setdefault('choices', choices)
         super(YearField, self).__init__(*args, **kwargs)
 
+    def __sub__(self, other):
+        return self - other
+
     @staticmethod
     def get_last_n_year_choices(n):
         current_year = timezone.now().year
@@ -41,3 +44,6 @@ class MonthField(models.PositiveIntegerField):
     def __init__(self, *args, **kwargs):
         kwargs.setdefault('choices', self.MONTH_CHOICES)
         super(MonthField, self).__init__(*args, **kwargs)
+
+    def __sub__(self, other):
+        return self - other

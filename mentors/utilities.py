@@ -23,6 +23,8 @@ class AbstractDurationModel(models.Model):
         blank=True,
         null=True,
         verbose_name=_('End Month'))
+    total_year = models.PositiveIntegerField(null=True, blank=True, editable=False, verbose_name=_('Total year'))
+    total_month = models.PositiveIntegerField(null=True, blank=True, editable=False, verbose_name=_('Total month'))
 
     class Meta:
         abstract = True
@@ -39,3 +41,16 @@ class AbstractDurationModel(models.Model):
                 raise ValidationError({'end_year': _('this field is required')})
             if not self.end_month:
                 raise ValidationError({'end_month': _('this field is required')})
+            if self.start_year > self.end_year:
+                raise ValidationError({'start_year': _('this field can not be bigger than end year')})
+            if self.end_year == self.start_year and self.start_month > self.end_month:
+                raise ValidationError({'start_month': _('this field can not be bigger than end month')})
+            if self.start_year == self.end_year and self.start_month == self.start_month:
+                raise ValidationError({'end_month': _('this field can not be the same as start month')})
+
+    def save(self, *args, **kwargs):
+        if self.end_year and self.end_month:
+            total_month = (self.end_year - self.start_year) * 12 + abs(self.end_month - self.start_month)
+            self.total_year = total_month // 12
+            self.total_month = total_month % 12
+        super().save()

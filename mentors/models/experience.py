@@ -3,7 +3,7 @@ from django.utils.translation import gettext_lazy as _
 
 from core.links.models import Link
 from core.locations.models import Location
-from utilities.db.models import BaseModel, BaseModelManager
+from utilities.db.basemodel import BaseModel, BaseModelManager
 
 from ..utilities import AbstractDurationModel
 
