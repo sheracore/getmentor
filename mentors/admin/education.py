@@ -7,8 +7,9 @@ admin.site.register(University)
 admin.site.register(Major)
 
 
-class EducationAdmin(DurationAdmin):  # TODO change to userdatamodel
+class EducationAdmin(DurationAdmin):
     fields = [
+        'mentor',
         'university',
         'degree',
         'major',
@@ -17,6 +18,7 @@ class EducationAdmin(DurationAdmin):  # TODO change to userdatamodel
         'activities_societies'
     ]
     list_display = [
+        'mentor',
         'university',
         'degree',
         'major',
@@ -28,21 +30,20 @@ class EducationAdmin(DurationAdmin):  # TODO change to userdatamodel
         'degree'
     ]
     search_fields = [
+        'mentor__user__email',
         'major__name',
         'university__name',
         'activities_societies',
     ]
     exclude = []
     raw_id_fields = [
+        'mentor',
         'university',
         'major',
         'location',
     ]
     dynamic_raw_id_fields = []
     readonly_fields = [
-        'university',
-        'major',
-        'location',
     ]
     allowed_actions = []
     inlines = []

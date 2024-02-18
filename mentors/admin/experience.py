@@ -1,18 +1,16 @@
 from django.contrib import admin
 
-from ..models import (Certificate, Company, Experience,  # noqa F401
-                      ExperienceSkill, Role, Skill)
+from ..models import Experience, ExperienceSkill, Role, Skill
 from .duration import DurationAdmin
 
 admin.site.register(Skill)
 admin.site.register(ExperienceSkill)
 admin.site.register(Role)
-admin.site.register(Company)
-admin.site.register(Certificate)
 
 
 class ExperienceAdmin(DurationAdmin):  # TODO change to userdatamodel
     fields = [
+        'mentor',
         'role',
         'seniority',
         'company',
@@ -20,6 +18,7 @@ class ExperienceAdmin(DurationAdmin):  # TODO change to userdatamodel
         'description',
     ]
     list_display = [
+        'mentor',
         'role',
         'seniority',
         'company',
@@ -30,21 +29,20 @@ class ExperienceAdmin(DurationAdmin):  # TODO change to userdatamodel
         'seniority',
     ]
     search_fields = [
+        'mentor__user__email',
         'role__name',
         'company__name',
         'description',
     ]
     exclude = []
     raw_id_fields = [
+        'mentor',
         'role',
         'company',
         'location',
     ]
     dynamic_raw_id_fields = []
     readonly_fields = [
-        'role',
-        'company',
-        'location',
     ]
     allowed_actions = []
     inlines = []

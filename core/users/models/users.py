@@ -34,6 +34,9 @@ class User(AbstractBaseUser, PermissionsMixin, BaseModel):
     USERNAME_FIELD = "email"
     REQUIRED_FIELDS = ["is_staff"]
 
+    def __str__(self):
+        return f"{self.email}"
+
     class Meta:
         app_label = "users"
         verbose_name = _("User")

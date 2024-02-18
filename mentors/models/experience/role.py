@@ -4,9 +4,10 @@ from django.utils.translation import gettext_lazy as _
 from utilities.db.basemodel import BaseModel, BaseModelManager
 
 
-class Expertise(BaseModel):
-    name = models.CharField(max_length=32, unique=True, verbose_name=_("Name"))
+class Role(BaseModel):
+    name = models.CharField(max_length=64, unique=True, verbose_name=_("Name"))
+
     objects = BaseModelManager()
 
     def __str__(self):
-        return f"{self.name}"
+        return self.name
