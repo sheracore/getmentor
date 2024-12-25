@@ -1,4 +1,4 @@
-from utilities.admin.basemodels import DataModelAdmin
+from .basemodels import DataModelAdmin
 
 
 class DurationAdmin(DataModelAdmin):
@@ -24,7 +24,6 @@ class DurationAdmin(DataModelAdmin):
         'is_current',
         'start_month',
         'end_month',
-        'total_year',
     ]
     search_fields = [
     ]

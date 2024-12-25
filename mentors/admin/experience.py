@@ -1,7 +1,8 @@
 from django.contrib import admin
 
+from utilities.admin import DurationAdmin
+
 from ..models import Experience, ExperienceSkill, Role, Skill
-from .duration import DurationAdmin
 
 admin.site.register(Skill)
 admin.site.register(ExperienceSkill)

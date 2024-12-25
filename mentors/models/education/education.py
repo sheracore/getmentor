@@ -2,9 +2,9 @@ from django.db import models
 from django.utils.translation import gettext_lazy as _
 
 from core.locations.models import Location
-from utilities.db.basemodel import BaseModel, BaseModelManager
+from utilities.db.abstract_models.basemodel import BaseModel, BaseModelManager
+from utilities.db.abstract_models.durationmodel import AbstractDurationModel
 
-from ...utilities import AbstractDurationModel
 from ..mentor import Mentor
 from .major import Major
 from .university import University

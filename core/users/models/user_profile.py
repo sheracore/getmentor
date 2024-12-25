@@ -6,7 +6,7 @@ from django.utils.translation import gettext_lazy as _
 from faker import Faker
 
 from core.files.models import FileType
-from utilities.db.basemodel import BaseModel, BaseModelManager
+from utilities.db.abstract_models.basemodel import BaseModel, BaseModelManager
 from utilities.db.fields import FileField
 
 

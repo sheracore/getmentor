@@ -3,9 +3,9 @@ from django.utils.translation import gettext_lazy as _
 
 from core.links.models import Link
 from core.locations.models import Location
-from utilities.db.basemodel import BaseModel, BaseModelManager
+from utilities.db.abstract_models.basemodel import BaseModel, BaseModelManager
+from utilities.db.abstract_models.durationmodel import AbstractDurationModel
 
-from ..utilities import AbstractDurationModel
 from .company import Company
 from .mentor import Mentor
 

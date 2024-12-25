@@ -1,7 +1,7 @@
 from django.db import models
 from django.utils.translation import gettext_lazy as _
 
-from utilities.db.basemodel import BaseModel, BaseModelManager
+from utilities.db.abstract_models.basemodel import BaseModel, BaseModelManager
 
 
 class University(BaseModel):

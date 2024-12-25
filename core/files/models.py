@@ -7,7 +7,7 @@ from django.db import models
 from django.db.models.signals import post_save
 from django.utils.translation import gettext_lazy as _
 
-from utilities.db.basemodel import BaseModel, BaseModelManager
+from utilities.db.abstract_models.basemodel import BaseModel, BaseModelManager
 
 from .utilities import (blur_hash_calculate, detect_type, get_document_path,
                         validate_file)

@@ -1,5 +1,6 @@
 from django.core.exceptions import ValidationError
 from django.db import models
+from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
 
 from utilities.db.fields import MonthField, YearField
@@ -23,8 +24,6 @@ class AbstractDurationModel(models.Model):
         blank=True,
         null=True,
         verbose_name=_('End Month'))
-    total_year = models.PositiveIntegerField(null=True, blank=True, editable=False, verbose_name=_('Total year'))
-    total_month = models.PositiveIntegerField(null=True, blank=True, editable=False, verbose_name=_('Total month'))
 
     class Meta:
         abstract = True
@@ -45,12 +44,21 @@ class AbstractDurationModel(models.Model):
                 raise ValidationError({'start_year': _('this field can not be bigger than end year')})
             if self.end_year == self.start_year and self.start_month > self.end_month:
                 raise ValidationError({'start_month': _('this field can not be bigger than end month')})
-            if self.start_year == self.end_year and self.start_month == self.start_month:
+            if self.start_year == self.end_year and self.start_month == self.end_month:
                 raise ValidationError({'end_month': _('this field can not be the same as start month')})
 
-    def save(self, *args, **kwargs):
+    @property
+    def total_year(self):
+        return self._total_month // 12
+
+    @property
+    def total_month(self):
+        return self._total_month % 12
+
+    @property
+    def _total_month(self):
         if self.end_year and self.end_month:
-            total_month = (self.end_year - self.start_year) * 12 + abs(self.end_month - self.start_month)
-            self.total_year = total_month // 12
-            self.total_month = total_month % 12
-        super().save()
+            return (self.end_year - self.start_year) * 12 + (self.end_month - self.start_month)
+        else:
+            end_year, end_month = timezone.now().year, timezone.now().month
+            return (end_year - self.start_year) * 12 + (end_month - self.start_month)

@@ -1,7 +1,8 @@
 from django.contrib import admin
 
+from utilities.admin import DurationAdmin
+
 from ..models import Education, Major, University
-from .duration import DurationAdmin
 
 admin.site.register(University)
 admin.site.register(Major)
