@@ -48,11 +48,11 @@ INSTALLED_APPS = [
     "django.contrib.staticfiles",
     "django_celery_beat",
     "django_countries",
-    "core.users",
-    "core.files",
-    "core.locations",
-    "core.links",
-    "mentors",
+    "getmentor.core.users",
+    "getmentor.core.files",
+    "getmentor.core.locations",
+    "getmentor.core.links",
+    "getmentor.mentors",
 ]
 
 MIDDLEWARE = [
