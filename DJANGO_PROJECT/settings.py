@@ -53,6 +53,7 @@ INSTALLED_APPS = [
     "getmentor.core.locations",
     "getmentor.core.links",
     "getmentor.mentors",
+    "getmentor.calendars"
 ]
 
 MIDDLEWARE = [
