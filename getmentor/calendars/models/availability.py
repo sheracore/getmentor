@@ -5,6 +5,8 @@ from django.utils.translation import gettext_lazy as _
 from getmentor.utilities.db.abstract_models.basemodel import (
     UserBaseModel, UserBaseModelManager)
 
+from ..utils import time_difference_in_minutes
+
 
 class Weekdays(models.IntegerChoices):
     MONDAY = 1, _('Monday')
@@ -31,5 +33,17 @@ class Availability(UserBaseModel):
 
     def clean(self):
         super(Availability, self).clean()
+
+        valid_minutes = {0, 30}
+
+        if self.start_time.minute not in valid_minutes:
+            raise ValidationError({"start_time": _(f"Start time minute must be between {valid_minutes}.")})
+
+        if self.end_time.minute not in valid_minutes:
+            raise ValidationError({"end_time": _(f"End time minute must be between {valid_minutes}.")})
+
         if self.start_time > self.end_time:
             raise ValidationError({"start_time": _("Start time must be before end time")})
+
+        if time_difference_in_minutes(self.end_time, self.start_time) < 120:
+            raise ValidationError({"end_time": _("You range should be at least 120 minutes.")})
