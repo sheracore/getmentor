@@ -40,6 +40,10 @@ celery -A DJANGO_PROJECT worker -l INFO
 celery -A DJANGO_PROJECT beat -l info -S django
 ```
 
+## Cache
+```angular2html
+python manage.py createcachetable
+```
 
 ### Production services
 ```commandline

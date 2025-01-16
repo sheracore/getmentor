@@ -33,8 +33,8 @@ DEBUG = os.environ.get("DEBUG", True)
 
 ALLOWED_HOSTS = ["*", os.environ.get("ALLOWED_HOSTS")]
 
-REDIS_HOST = os.environ.get("REDIS_HOST")
-REDIS_PORT = os.environ.get("REDIS_PORT")
+REDIS_HOST = os.environ.get('REDIS_HOST', 'localhost')
+REDIS_PORT = os.environ.get('REDIS_PORT', 6379)
 # REDIS_PASSWORD = os.environ.get('REDIS_PASSWORD')
 
 # Application definition
@@ -101,6 +101,19 @@ DATABASES = {
             "client_encoding": "UTF8",
         },
     },
+}
+
+
+"""
+CACHES
+"""
+
+CACHES = {
+    "default": {
+        "BACKEND": "django.core.cache.backends.redis.RedisCache",
+        "LOCATION": "redis://{}:{}/1".format(REDIS_HOST, REDIS_PORT),
+        "KEY_PREFIX": "CACHE_BACKEND"
+    }
 }
 
 

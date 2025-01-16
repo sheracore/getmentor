@@ -46,4 +46,4 @@ class Availability(UserBaseModel):
             raise ValidationError({"start_time": _("Start time must be before end time")})
 
         if time_difference_in_minutes(self.end_time, self.start_time) < 120:
-            raise ValidationError({"end_time": _("You range should be at least 120 minutes.")})
+            raise ValidationError({"end_time": _("Your availabilities interval should be at least 120 minutes.")})
