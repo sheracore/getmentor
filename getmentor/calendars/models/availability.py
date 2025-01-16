@@ -6,6 +6,7 @@ from getmentor.utilities.db.abstract_models.basemodel import (
     UserBaseModel, UserBaseModelManager)
 
 from ..utils import time_difference_in_minutes
+from .calendar_settings import CalendarSettings
 
 
 class Weekdays(models.IntegerChoices):
@@ -34,7 +35,9 @@ class Availability(UserBaseModel):
     def clean(self):
         super(Availability, self).clean()
 
-        valid_minutes = {0, 30}
+        calendar_settings = CalendarSettings.objects.get()
+        valid_minutes = calendar_settings.allowed_time_offsets
+        availability_interval = calendar_settings.availability_interval
 
         if self.start_time.minute not in valid_minutes:
             raise ValidationError({"start_time": _(f"Start time minute must be between {valid_minutes}.")})
@@ -45,5 +48,6 @@ class Availability(UserBaseModel):
         if self.start_time > self.end_time:
             raise ValidationError({"start_time": _("Start time must be before end time")})
 
-        if time_difference_in_minutes(self.end_time, self.start_time) < 120:
-            raise ValidationError({"end_time": _("Your availabilities interval should be at least 120 minutes.")})
+        if time_difference_in_minutes(self.start_time, self.end_time) < availability_interval:
+            raise ValidationError(
+                {"end_time": _(f"Your availabilities interval should be at least {availability_interval} minutes.")})
