@@ -2,11 +2,12 @@ from django.contrib import admin
 
 from getmentor.utilities.admin import UserDurationAdmin
 
-from ..models import Experience, ExperienceSkill, Role, Skill
+from ..models import Experience, ExperienceSkill, Industry, Role, Skill
 
 admin.site.register(Skill)
 admin.site.register(ExperienceSkill)
 admin.site.register(Role)
+admin.site.register(Industry)
 
 
 class ExperienceAdmin(UserDurationAdmin):  # TODO change to userdatamodel
