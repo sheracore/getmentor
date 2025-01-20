@@ -3,11 +3,9 @@ from django.db import models
 from getmentor.utilities.db.abstract_models.basemodel import (BaseModel,
                                                               BaseModelManager)
 
-from .. import Industry
-
 
 class Seniority(BaseModel):
-    industry = models.ForeignKey(Industry, on_delete=models.CASCADE)
+    industry = models.ForeignKey('mentors.Industry', on_delete=models.CASCADE)
     name = models.CharField(max_length=255, help_text="Name of the seniority e.g. Tech industry: "
                                                       "Entry Level"
                                                       "Intermediate"
