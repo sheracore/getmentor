@@ -10,18 +10,8 @@ from getmentor.utilities.db.abstract_models.durationmodel import \
 from ..company import Company
 from ..mentor import Mentor
 from .role import Role
+from .seniority import Seniority
 from .skill import Skill
-
-
-class Seniority(models.IntegerChoices):
-    ENTRY_LEVEL = 1, _('Entry Level')
-    INTERMEDIATE = 2, _('Intermediate')
-    SENIOR = 3, _('Senior')
-    MANAGER = 4, _('Manager')
-    DIRECTOR = 5, _('Director')
-    LEAD = 6, _('Lead')
-    EXECUTIVE = 7, _('Executive')
-    FOUNDER = 8, _('Founder')
 
 
 class Experience(AbstractDurationModel, UserBaseModel):
@@ -31,8 +21,10 @@ class Experience(AbstractDurationModel, UserBaseModel):
         on_delete=models.CASCADE,
         verbose_name=_("Role")
     )
-    seniority = models.IntegerField(
-        choices=Seniority.choices,
+    seniority = models.ForeignKey(
+        Seniority,
+        null=True,
+        on_delete=models.SET_NULL,
         verbose_name=_("Seniority"))
 
     company = models.ForeignKey(
