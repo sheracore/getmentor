@@ -2,8 +2,8 @@ from django.core.exceptions import ValidationError
 from django.db import models
 from django.utils.translation import gettext_lazy as _
 
-from getmentor.utilities.db.abstract_models.basemodel import (
-    UserBaseModel, UserBaseModelManager)
+from getmentor.utilities.db.abstract_models.basemodel import (BaseModel,
+                                                              BaseModelManager)
 
 from ..utils import time_difference_in_minutes
 from .calendar_settings import CalendarSettings
@@ -19,12 +19,13 @@ class Weekdays(models.IntegerChoices):
     SUNDAY = 7, _('Sunday')
 
 
-class Availability(UserBaseModel):
+class Availability(BaseModel):
+    user = models.ForeignKey('users.User', blank=True, null=True, on_delete=models.SET_NULL)
     day_of_week = models.IntegerField(choices=Weekdays.choices, help_text=_("Day of week"))
     start_time = models.TimeField()
     end_time = models.TimeField()
 
-    objects = UserBaseModelManager()
+    objects = BaseModelManager()
 
     class Mets:
         unique_together = ('day_of_week', 'start_time', 'end_time')
