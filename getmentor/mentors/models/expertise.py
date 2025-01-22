@@ -24,4 +24,4 @@ class Expertise(BaseModel):
     objects = BaseModelManager()
 
     def __str__(self):
-        return f"{self.name}"
+        return f"{self.industry} {self.name}"
