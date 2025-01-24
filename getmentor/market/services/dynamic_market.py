@@ -3,6 +3,7 @@ from typing import List
 from django.core.cache import cache
 from django.db.models import Count, F
 
+from getmentor.market.models import ExcludedMarket
 from getmentor.mentors.models import Expertise
 
 
@@ -24,10 +25,12 @@ class DynamicMarket:
 
         expertise_mentors = cache.get(cls.CACHE_KEY)
         if not expertise_mentors:
+            excluded_markets = ExcludedMarket.objects.values_list('expertise__pk', flat=True)
+
             # Mentor counts per expertise
             expertise_mentors = list(Expertise.objects.annotate(mentor_count=Count('mentors')).filter(
-                mentor_count__gte=F('industry__market_qualified_limitation')).values('name', 'industry__name',
-                                                                                     'mentor_count'))
+                mentor_count__gte=F('industry__market_qualified_limitation')).exclude(pk__in=excluded_markets).values(
+                'name', 'industry__name', 'mentor_count'))
             cache.set(cls.CACHE_KEY, expertise_mentors, 60 * 60)
 
         return expertise_mentors

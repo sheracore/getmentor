@@ -8,4 +8,5 @@ os.environ.setdefault("DJANGO_SETTINGS_MODULE", "DJANGO_PROJECT.settings")
 app = Celery("DJANGO_PROJECT")
 app.config_from_object("django.conf:settings", namespace="CELERY")
 app.conf.task_default_queue = os.path.basename(os.path.normpath(settings.BASE_DIR))
+app.conf.broker_connection_retry_on_startup = True
 app.autodiscover_tasks()

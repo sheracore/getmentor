@@ -10,10 +10,9 @@ class ExcludedMarket(BaseModel):
                              blank=True,
                              null=True,
                              on_delete=models.SET_NULL)
-    expertise = models.ForeignKey('expertise.Expertise',
-                                  unique=True,
-                                  on_delete=models.CASCADE,
-                                  help_text=_("Expertises to be excluded in the market"))
+    expertise = models.OneToOneField('mentors.Expertise',
+                                     on_delete=models.CASCADE,
+                                     help_text=_("Expertises to be excluded in the market"))
 
     objects = BaseModelManager()
 

@@ -7,3 +7,6 @@ class MentorsConfig(AppConfig):
     app_label = "mentors"
     verbose_name = _("Mentor")
     verbose_name_plural = _("Mentors")
+
+    def ready(self):
+        import getmentor.mentors.signals  # noqa: F401
