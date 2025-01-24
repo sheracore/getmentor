@@ -8,6 +8,8 @@ from getmentor.utilities.db.abstract_models.basemodel import (BaseModel,
 class Industry(BaseModel):
     user = models.ForeignKey('users.User', blank=True, null=True, on_delete=models.SET_NULL)
     name = models.CharField(max_length=64, help_text=_('Industry name'))
+    market_qualified_limitation = models.IntegerField(default=10, help_text=_(
+        'Industry market qualified limitation used for market industry display'))
     description = models.TextField(help_text=_('Industry description'))
 
     objects = BaseModelManager()

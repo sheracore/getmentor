@@ -4,15 +4,26 @@ from django.utils.translation import gettext_lazy as _
 from getmentor.utilities.db.abstract_models.basemodel import (BaseModel,
                                                               BaseModelManager)
 
-from .expertise import Expertise
+from ..tasks import (invalidate_matcher_cache_after_deleting_mentor_task,
+                     invalidate_matcher_cache_after_saving_mentor_task)
 
 
 class Mentor(BaseModel):
     user = models.OneToOneField('users.User', on_delete=models.CASCADE, related_name=_('User'))
-    expertise = models.ForeignKey(Expertise, on_delete=models.CASCADE, related_name='mentors',
+    expertise = models.ForeignKey('mentors.Expertise', on_delete=models.CASCADE, related_name='mentors',
                                   verbose_name=_('Expertise'))
 
     objects = BaseModelManager()
 
     def __str__(self):
         return f"{self.user}-{self.expertise}"
+
+    def save(self, *args, **kwargs):
+        super().save(*args, **kwargs)
+        # Invalidate matcher cache keys after saving
+        invalidate_matcher_cache_after_saving_mentor_task.delay(self)
+
+    def delete(self, *args, **kwargs):
+        super().delete(*args, **kwargs)
+        # Invalidate matcher cache keys after deleting
+        invalidate_matcher_cache_after_deleting_mentor_task.delay(self)
